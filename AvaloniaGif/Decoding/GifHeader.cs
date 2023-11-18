@@ -7,13 +7,13 @@ namespace AvaloniaGif.Decoding
     {
         public bool HasGlobalColorTable;
         public int GlobalColorTableSize;
-        public ulong GlobalColorTableCacheID;
+        public ulong GlobalColorTableCacheId;
         public int BackgroundColorIndex;
         public long HeaderSize;
         internal int Iterations = -1;
         public GifRepeatBehavior IterationCount;
         public GifRect Dimensions;
         private GifColor[] _globarColorTable;
-        public GifColor[] GlobarColorTable;
+        public GifColor[] GlobalColorTable;
     }
 }

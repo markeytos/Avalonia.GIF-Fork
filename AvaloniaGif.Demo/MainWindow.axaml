@@ -1,0 +1,17 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:avaloniaGif="clr-namespace:AvaloniaGif;assembly=AvaloniaGif"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="AvaloniaGif.Demo.MainWindow"
+        Title="AvaloniaGif.Demo">
+    <ListBox>
+        <avaloniaGif:GifImage AutoStart="True" 
+            SourceUriRaw="C:\Users\Yesman\Desktop\GithubProjects\Avalonia.GIF\AvaloniaGif.Demo\Images\c-loader.gif"/>
+        <avaloniaGif:GifImage AutoStart="True" 
+                              SourceUriRaw="C:\Users\Yesman\Desktop\GithubProjects\Avalonia.GIF\AvaloniaGif.Demo\Images\evitare-loader.gif"/>
+        <avaloniaGif:GifImage AutoStart="True" 
+                              SourceUriRaw="C:\Users\Yesman\Desktop\GithubProjects\Avalonia.GIF\AvaloniaGif.Demo\Images\loader.gif"/>
+    </ListBox>
+</Window>

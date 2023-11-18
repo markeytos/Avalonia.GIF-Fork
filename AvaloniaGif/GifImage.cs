@@ -33,8 +33,8 @@ namespace AvaloniaGif
         public static readonly StyledProperty<Stretch> StretchProperty =
             AvaloniaProperty.Register<GifImage, Stretch>(nameof(Stretch));
 
-        private GifInstance gifInstance;
-        private RenderTargetBitmap backingRTB;
+        private GifInstance _gifInstance;
+        private RenderTargetBitmap _backingRtb;
         private bool _hasNewSource;
         private object? _newSource;
         private Stopwatch _stopwatch;
@@ -90,8 +90,7 @@ namespace AvaloniaGif
 
         private static void IterationCountChanged(AvaloniaPropertyChangedEventArgs e)
         {
-            var image = e.Sender as GifImage;
-            if (image is null || e.NewValue is not IterationCount iterationCount)
+            if (e.Sender is not GifImage image || e.NewValue is not IterationCount iterationCount)
                 return;
 
             image.IterationCount = iterationCount;
@@ -105,9 +104,9 @@ namespace AvaloniaGif
             if (_hasNewSource)
             {
                 StopAndDispose();
-                gifInstance = new GifInstance(_newSource);
-                gifInstance.IterationCount = IterationCount;
-                backingRTB = new RenderTargetBitmap(gifInstance.GifPixelSize, new Vector(96, 96));
+                _gifInstance = new GifInstance(_newSource);
+                _gifInstance.IterationCount = IterationCount;
+                _backingRtb = new RenderTargetBitmap(_gifInstance.GifPixelSize, new Vector(96, 96));
                 _hasNewSource = false;
 
                 _stopwatch ??= new Stopwatch();
@@ -117,7 +116,7 @@ namespace AvaloniaGif
                 return;
             }
 
-            if (gifInstance is null || (gifInstance.CurrentCts?.IsCancellationRequested ?? true))
+            if (_gifInstance is null || (_gifInstance.CurrentCts?.IsCancellationRequested ?? true))
             {
                 return;
             }
@@ -130,35 +129,33 @@ namespace AvaloniaGif
                 }
             }   
 
-            var currentFrame = gifInstance.ProcessFrameTime(_stopwatch.Elapsed);
+            var currentFrame = _gifInstance.ProcessFrameTime(_stopwatch.Elapsed);
 
-            if (currentFrame is { } source && backingRTB is not null)
+            if (currentFrame != null && _backingRtb != null)
             {
-                using var ctx = backingRTB.CreateDrawingContext();
-                var ts = new Rect(source.Size);
-                ctx.DrawImage(source, ts, ts);
+                using var ctx = _backingRtb.CreateDrawingContext();
+                var ts = new Rect(currentFrame.Size);
+                ctx.DrawImage(currentFrame, ts, ts);
             }
 
-            if (backingRTB is not null && Bounds.Width > 0 && Bounds.Height > 0)
-            {
-                var viewPort = new Rect(Bounds.Size);
-                var sourceSize = backingRTB.Size;
+            if (_backingRtb is null || !(Bounds.Width > 0) || !(Bounds.Height > 0)) return;
+            var viewPort = new Rect(Bounds.Size);
+            var sourceSize = _backingRtb.Size;
 
-                var scale = Stretch.CalculateScaling(Bounds.Size, sourceSize, StretchDirection);
-                var scaledSize = sourceSize * scale;
-                var destRect = viewPort
-                    .CenterRect(new Rect(scaledSize))
-                    .Intersect(viewPort);
+            var scale = Stretch.CalculateScaling(Bounds.Size, sourceSize, StretchDirection);
+            var scaledSize = sourceSize * scale;
+            var destRect = viewPort
+                .CenterRect(new Rect(scaledSize))
+                .Intersect(viewPort);
 
-                var sourceRect = new Rect(sourceSize)
-                    .CenterRect(new Rect(destRect.Size / scale));
+            var sourceRect = new Rect(sourceSize)
+                .CenterRect(new Rect(destRect.Size / scale));
 
-                context.DrawImage(
-                    backingRTB, 
-                    sourceRect,
-                    destRect
-                );
-            }
+            context.DrawImage(
+                _backingRtb, 
+                sourceRect,
+                destRect
+            );
         }
 
         public void Start()
@@ -179,7 +176,7 @@ namespace AvaloniaGif
         /// <returns>The desired size of the control.</returns>
         protected override Size MeasureOverride(Size availableSize)
         {
-            var source = backingRTB;
+            var source = _backingRtb;
             var result = new Size();
 
             if (source != null)
@@ -193,22 +190,19 @@ namespace AvaloniaGif
         /// <inheritdoc/>
         protected override Size ArrangeOverride(Size finalSize)
         {
-            var source = backingRTB;
+            var source = _backingRtb;
 
-            if (source != null)
-            {
-                var sourceSize = source.Size;
-                var result = Stretch.CalculateSize(finalSize, sourceSize);
-                return result;
-            }
+            if (source == null) return new Size();
+            var sourceSize = source.Size;
+            var result = Stretch.CalculateSize(finalSize, sourceSize);
+            return result;
 
-            return new Size();
         }
 
         public void StopAndDispose()
         {
-            gifInstance?.Dispose();
-            backingRTB?.Dispose();
+            _gifInstance?.Dispose();
+            _backingRtb?.Dispose();
         }
 
         protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)

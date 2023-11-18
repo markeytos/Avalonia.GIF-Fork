@@ -2,7 +2,7 @@ namespace AvaloniaGif.Decoding
 {
     internal enum ExtensionType
     {
-        GRAPHICS_CONTROL = 0xF9,
-        APPLICATION = 0xFF
+        GraphicsControl = 0xF9,
+        Application = 0xFF
     }
 }
