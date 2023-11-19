@@ -30,13 +30,10 @@ namespace AvaloniaGif
         {
             Stream s => s,
             Uri u => GetStreamFromUri(u),
-            string str => GetStreamFromString(str),
             _ => throw new InvalidDataException("Unsupported source object")
         })
         { }
-
-        public GifInstance(string uri) : this(GetStreamFromString(uri))
-        { }
+        
 
         public GifInstance(Uri uri) : this(GetStreamFromUri(uri))
         { }
@@ -69,17 +66,20 @@ namespace AvaloniaGif
 
             _gifDecoder.RenderFrame(0, _targetBitmap);
         }
+        
 
-        public static Stream GetStreamFromString(string str)
+        public static Stream GetStreamFromUri(Uri uri)
         {
-            if (!Uri.TryCreate(str, UriKind.RelativeOrAbsolute, out var res))
+            if (uri.OriginalString.StartsWith("resm") || uri.OriginalString.StartsWith("avares"))
             {
-                throw new InvalidCastException("The string provided can't be converted to URI.");
+                return AssetLoader.Open(uri);
             }
-            return GetStreamFromUri(res);
+            if (uri.IsAbsoluteUri && uri.IsFile)
+            {
+                return new FileStream(uri.LocalPath, FileMode.Open, FileAccess.Read, FileShare.Read);
+            }
+            throw new InvalidDataException("Can't resolve path to gif");
         }
-
-        public static Stream GetStreamFromUri(Uri uri) => new FileStream(uri.AbsolutePath, FileMode.Open);
 
         public PixelSize GifPixelSize { get; }
 

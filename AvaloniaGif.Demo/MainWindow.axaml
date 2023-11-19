@@ -3,15 +3,22 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:avaloniaGif="clr-namespace:AvaloniaGif;assembly=AvaloniaGif"
+        xmlns:demo="clr-namespace:AvaloniaGif.Demo"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="AvaloniaGif.Demo.MainWindow"
-        Title="AvaloniaGif.Demo">
+        Title="AvaloniaGif.Demo"
+        x:DataType="demo:MainWindowViewModel">
+    <Window.DataContext>
+        <demo:MainWindowViewModel/>
+    </Window.DataContext>
     <ListBox>
         <avaloniaGif:GifImage AutoStart="True" 
-            SourceUriRaw="C:\Users\Yesman\Desktop\GithubProjects\Avalonia.GIF\AvaloniaGif.Demo\Images\c-loader.gif"/>
+            SourceUri="{Binding  Path}"/>
         <avaloniaGif:GifImage AutoStart="True" 
-                              SourceUriRaw="C:\Users\Yesman\Desktop\GithubProjects\Avalonia.GIF\AvaloniaGif.Demo\Images\evitare-loader.gif"/>
+                              SourceUri="avares://AvaloniaGif.Demo/Images/c-loader.gif"/>
         <avaloniaGif:GifImage AutoStart="True" 
-                              SourceUriRaw="C:\Users\Yesman\Desktop\GithubProjects\Avalonia.GIF\AvaloniaGif.Demo\Images\loader.gif"/>
+                              SourceUri="avares://AvaloniaGif.Demo/Images/c-loader.gif"/>
+        <avaloniaGif:GifImage AutoStart="True" 
+                              SourceUri="C:\Users\Yesman\Desktop\GithubProjects\Avalonia.GIF\AvaloniaGif.Demo\Images\c-loader.gif"/>
     </ListBox>
 </Window>

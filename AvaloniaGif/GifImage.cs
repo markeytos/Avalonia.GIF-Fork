@@ -12,8 +12,6 @@ namespace AvaloniaGif
 {
     public class GifImage : Control
     {
-        public static readonly StyledProperty<string> SourceUriRawProperty =
-            AvaloniaProperty.Register<GifImage, string>(nameof(SourceUriRaw));
 
         public static readonly StyledProperty<Uri> SourceUriProperty =
             AvaloniaProperty.Register<GifImage, Uri>(nameof(SourceUri));
@@ -41,17 +39,11 @@ namespace AvaloniaGif
 
         static GifImage()
         {
-            AffectsRender<GifImage>(SourceStreamProperty, SourceUriProperty, SourceUriRawProperty, StretchProperty);
-            AffectsArrange<GifImage>(SourceStreamProperty, SourceUriProperty, SourceUriRawProperty, StretchProperty);
-            AffectsMeasure<GifImage>(SourceStreamProperty, SourceUriProperty, SourceUriRawProperty, StretchProperty);
+            AffectsRender<GifImage>(SourceStreamProperty, SourceUriProperty, StretchProperty);
+            AffectsArrange<GifImage>(SourceStreamProperty, SourceUriProperty, StretchProperty);
+            AffectsMeasure<GifImage>(SourceStreamProperty, SourceUriProperty, StretchProperty);
         }
-
-        public string SourceUriRaw
-        {
-            get => GetValue(SourceUriRawProperty);
-            set => SetValue(SourceUriRawProperty, value);
-        }
-
+        
         public Uri SourceUri
         {
             get => GetValue(SourceUriProperty);
@@ -209,8 +201,7 @@ namespace AvaloniaGif
         {
             base.OnPropertyChanged(e);
 
-            if (e.Property != SourceUriRawProperty
-                && e.Property != SourceUriProperty
+            if (e.Property != SourceUriProperty
                 && e.Property != SourceStreamProperty
                 && e.Property != IterationCountProperty
                 && e.Property != AutoStartProperty)

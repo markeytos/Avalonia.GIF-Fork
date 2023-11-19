@@ -12,6 +12,7 @@
     <ItemGroup>
         <PackageReference Include="Avalonia" Version="11.0.2"/>
         <PackageReference Include="Avalonia.Desktop" Version="11.0.2"/>
+        <PackageReference Include="Avalonia.ReactiveUI" Version="11.0.2" />
         <PackageReference Include="Avalonia.Themes.Fluent" Version="11.0.2"/>
         <PackageReference Include="Avalonia.Fonts.Inter" Version="11.0.2"/>
         <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
@@ -20,13 +21,7 @@
 
 
     <ItemGroup>
-      <AvaloniaResource Include="Images\c-loader.gif" />
-      <AvaloniaResource Include="Images\earth.gif" />
-      <AvaloniaResource Include="Images\evitare-loader.gif" />
-      <AvaloniaResource Include="Images\laundry.gif" />
-      <AvaloniaResource Include="Images\loader.gif" />
-      <AvaloniaResource Include="Images\newton-cradle.gif" />
-      <AvaloniaResource Include="Images\rainbow.gif" />
+      <AvaloniaResource Include="Images\**"/>
     </ItemGroup>
 
 
