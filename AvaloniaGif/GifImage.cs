@@ -7,12 +7,13 @@ using Avalonia.Controls;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Threading;
+using Exception = System.Exception;
 
 namespace AvaloniaGif
 {
     public class GifImage : Control
     {
-
+        public event Action Error;
         public static readonly StyledProperty<Uri> SourceUriProperty =
             AvaloniaProperty.Register<GifImage, Uri>(nameof(SourceUri));
 
@@ -90,13 +91,22 @@ namespace AvaloniaGif
 
         public override void Render(DrawingContext context)
         {
-            Dispatcher.UIThread.Post(InvalidateMeasure, DispatcherPriority.Background);
-            Dispatcher.UIThread.Post(InvalidateVisual, DispatcherPriority.Background);
-
             if (_hasNewSource)
             {
                 StopAndDispose();
-                _gifInstance = new GifInstance(_newSource);
+                try
+                {
+                    _gifInstance = new GifInstance(_newSource);
+                }
+                catch (Decoding.InvalidGifStreamException e)
+                {
+                    context.Dispose();
+                    _hasNewSource = false;
+                    if (Error is null) return;
+                    Dispatcher.UIThread.Post(Error.Invoke, DispatcherPriority.Background);
+                    return;
+                }
+
                 _gifInstance.IterationCount = IterationCount;
                 _backingRtb = new RenderTargetBitmap(_gifInstance.GifPixelSize, new Vector(96, 96));
                 _hasNewSource = false;
@@ -143,11 +153,9 @@ namespace AvaloniaGif
             var sourceRect = new Rect(sourceSize)
                 .CenterRect(new Rect(destRect.Size / scale));
 
-            context.DrawImage(
-                _backingRtb, 
-                sourceRect,
-                destRect
-            );
+            context.DrawImage(_backingRtb, sourceRect, destRect);
+            Dispatcher.UIThread.Post(InvalidateMeasure, DispatcherPriority.Background);
+            Dispatcher.UIThread.Post(InvalidateVisual, DispatcherPriority.Background);
         }
 
         public void Start()

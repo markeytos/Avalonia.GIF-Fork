@@ -12,13 +12,7 @@
         <demo:MainWindowViewModel/>
     </Window.DataContext>
     <ListBox>
-        <avaloniaGif:GifImage AutoStart="True" 
-            SourceUri="{Binding  Path}"/>
-        <avaloniaGif:GifImage AutoStart="True" 
-                              SourceUri="avares://AvaloniaGif.Demo/Images/c-loader.gif"/>
-        <avaloniaGif:GifImage AutoStart="True" 
-                              SourceUri="avares://AvaloniaGif.Demo/Images/c-loader.gif"/>
-        <avaloniaGif:GifImage AutoStart="True" 
-                              SourceUri="C:\Users\Yesman\Desktop\GithubProjects\Avalonia.GIF\AvaloniaGif.Demo\Images\c-loader.gif"/>
+        <avaloniaGif:GifImage AutoStart="True" Name="Image"
+            SourceUri="C:\Users\Yesman\Desktop\img.gif"/>
     </ListBox>
 </Window>
