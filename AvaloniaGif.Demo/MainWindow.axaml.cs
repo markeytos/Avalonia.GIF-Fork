@@ -10,13 +10,14 @@ public partial class MainWindow : Window
     {
         InitializeComponent();
         Image.Error += Delete;
+        Image2.Error += Delete;
     }
 
     private void Delete()
     {
         i += 1;
         Console.WriteLine("Error" + i);
-        Content = new TextBlock() { Text = "error"};
+        Console.WriteLine("//");
         
     }
 }

@@ -91,6 +91,8 @@ namespace AvaloniaGif
 
         public override void Render(DrawingContext context)
         {
+            Dispatcher.UIThread.Post(InvalidateMeasure, DispatcherPriority.Background);
+            Dispatcher.UIThread.Post(InvalidateVisual, DispatcherPriority.Background);
             if (_hasNewSource)
             {
                 StopAndDispose();
@@ -154,19 +156,17 @@ namespace AvaloniaGif
                 .CenterRect(new Rect(destRect.Size / scale));
 
             context.DrawImage(_backingRtb, sourceRect, destRect);
-            Dispatcher.UIThread.Post(InvalidateMeasure, DispatcherPriority.Background);
-            Dispatcher.UIThread.Post(InvalidateVisual, DispatcherPriority.Background);
         }
 
         public void Start()
         {
-            _stopwatch.Start();
+            _stopwatch?.Start();
         }
 
         public void Stop()
         {
-            _stopwatch.Reset();
-            _stopwatch.Stop();
+            _stopwatch?.Reset();
+            _stopwatch?.Stop();
         }
 
         /// <summary>
@@ -209,28 +209,17 @@ namespace AvaloniaGif
         {
             base.OnPropertyChanged(e);
 
-            if (e.Property != SourceUriProperty
-                && e.Property != SourceStreamProperty
-                && e.Property != IterationCountProperty
-                && e.Property != AutoStartProperty)
-            {
-                return;
-            }
+            if (e.Property != SourceUriProperty &&
+                e.Property != SourceStreamProperty &&
+                e.Property != IterationCountProperty) return;
 
             if (e.Property == IterationCountProperty)
             {
                 IterationCountChanged(e);
             }
 
-            var image = e.Sender as GifImage;
-
-            if (image == null)
-                return;
-
-            if (e.NewValue is null)
-            {
-                return;
-            }
+            if (e.Sender is not GifImage image || e.NewValue is null) return;
+            
 
             image._hasNewSource = true;
             image._newSource = e.NewValue;
