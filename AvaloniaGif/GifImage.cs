@@ -7,12 +7,13 @@ using Avalonia.Controls;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Threading;
+using Exception = System.Exception;
 
 namespace AvaloniaGif
 {
     public class GifImage : Control
     {
-
+        public event Action Error;
         public static readonly StyledProperty<Uri> SourceUriProperty =
             AvaloniaProperty.Register<GifImage, Uri>(nameof(SourceUri));
 
@@ -92,11 +93,22 @@ namespace AvaloniaGif
         {
             Dispatcher.UIThread.Post(InvalidateMeasure, DispatcherPriority.Background);
             Dispatcher.UIThread.Post(InvalidateVisual, DispatcherPriority.Background);
-
             if (_hasNewSource)
             {
                 StopAndDispose();
-                _gifInstance = new GifInstance(_newSource);
+                try
+                {
+                    _gifInstance = new GifInstance(_newSource);
+                }
+                catch (Decoding.InvalidGifStreamException e)
+                {
+                    context.Dispose();
+                    _hasNewSource = false;
+                    if (Error is null) return;
+                    Dispatcher.UIThread.Post(Error.Invoke, DispatcherPriority.Background);
+                    return;
+                }
+
                 _gifInstance.IterationCount = IterationCount;
                 _backingRtb = new RenderTargetBitmap(_gifInstance.GifPixelSize, new Vector(96, 96));
                 _hasNewSource = false;
@@ -143,22 +155,18 @@ namespace AvaloniaGif
             var sourceRect = new Rect(sourceSize)
                 .CenterRect(new Rect(destRect.Size / scale));
 
-            context.DrawImage(
-                _backingRtb, 
-                sourceRect,
-                destRect
-            );
+            context.DrawImage(_backingRtb, sourceRect, destRect);
         }
 
         public void Start()
         {
-            _stopwatch.Start();
+            _stopwatch?.Start();
         }
 
         public void Stop()
         {
-            _stopwatch.Reset();
-            _stopwatch.Stop();
+            _stopwatch?.Reset();
+            _stopwatch?.Stop();
         }
 
         /// <summary>
@@ -201,28 +209,17 @@ namespace AvaloniaGif
         {
             base.OnPropertyChanged(e);
 
-            if (e.Property != SourceUriProperty
-                && e.Property != SourceStreamProperty
-                && e.Property != IterationCountProperty
-                && e.Property != AutoStartProperty)
-            {
-                return;
-            }
+            if (e.Property != SourceUriProperty &&
+                e.Property != SourceStreamProperty &&
+                e.Property != IterationCountProperty) return;
 
             if (e.Property == IterationCountProperty)
             {
                 IterationCountChanged(e);
             }
 
-            var image = e.Sender as GifImage;
-
-            if (image == null)
-                return;
-
-            if (e.NewValue is null)
-            {
-                return;
-            }
+            if (e.Sender is not GifImage image || e.NewValue is null) return;
+            
 
             image._hasNewSource = true;
             image._newSource = e.NewValue;

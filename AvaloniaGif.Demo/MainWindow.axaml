@@ -18,5 +18,11 @@
                               SourceUri="avares://AvaloniaGif.Demo/Images/c-loader.gif" />
         <avaloniaGif:GifImage AutoStart="False" 
                               SourceUri="avares://AvaloniaGif.Demo/Images/c-loader.gif"/>
+        <avaloniaGif:GifImage AutoStart="True" 
+                              SourceUri="C:\Users\Yesman\Desktop\GithubProjects\Avalonia.GIF\AvaloniaGif.Demo\Images\c-loader.gif"/>
+        <avaloniaGif:GifImage AutoStart="True" 
+                              SourceUri="C:\Users\Yesman\Desktop\GithubProjects\Avalonia.GIF\AvaloniaGif.Demo\Images\c-loader.gif"/>
+        <avaloniaGif:GifImage AutoStart="True" 
+                              SourceUri="C:\Users\Yesman\Desktop\GithubProjects\Avalonia.GIF\AvaloniaGif.Demo\Images\c-loader.gif"/>
     </ListBox>
 </Window>
