@@ -2,8 +2,27 @@
 	<PropertyGroup>
 		<TargetFramework>net8.0</TargetFramework>
 		<LangVersion>latest</LangVersion> 
-		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks> 
+		<GeneratePackageOnBuild>True</GeneratePackageOnBuild> 
+		<PackageId>AvaloniaGif-Fork</PackageId> 
+		<Title>AvaloniaGif-Fork</Title> 
+		<PackageReadmeFile>README.md</PackageReadmeFile> 
+		<RepositoryUrl>https://github.com/markeytos/Avalonia.GIF-Fork</RepositoryUrl> 
+		<AssemblyVersion>1.0.1</AssemblyVersion> 
+		<FileVersion>1.0.1</FileVersion> 
+		<Version>1.0.1</Version> 
+		<PackageLicenseFile>LICENSE.md</PackageLicenseFile>
 	</PropertyGroup>
+	<ItemGroup>
+	  <None Include="..\LICENSE.md">
+	    <Pack>True</Pack>
+	    <PackagePath>\</PackagePath>
+	  </None>
+	  <None Include="..\README.md">
+	    <Pack>True</Pack>
+	    <PackagePath>\</PackagePath>
+	  </None>
+	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="Avalonia" Version="11.0.7" />
 	</ItemGroup>
